@@ -1,0 +1,1 @@
+export { default, pool } from '../../config/db.js'
