@@ -1,44 +1,31 @@
-import { useEffect, useState } from 'react'
-import apiClient from '../api/client.js'
-import { AuthContext, tokenKey } from './auth-context.js'
+import { useState } from 'react'
+import { AuthContext } from './auth-context.js'
 
-function saveSession({ token, user }) {
-  localStorage.setItem(tokenKey, token)
-  return user
+const guestUser = {
+  id: 1,
+  first_name: 'Shopper',
+  last_name: '',
+  email: 'shopper@instacart.local',
+  role: 'user',
 }
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null)
-  const [isLoading, setIsLoading] = useState(() => Boolean(localStorage.getItem(tokenKey)))
+  const [user, setUser] = useState(guestUser)
 
-  useEffect(() => {
-    const token = localStorage.getItem(tokenKey)
-
-    if (!token) return
-
-    apiClient.get('/auth/me')
-      .then((response) => setUser(response.data.user))
-      .catch(() => localStorage.removeItem(tokenKey))
-      .finally(() => setIsLoading(false))
-  }, [])
-
-  async function login(credentials) {
-    const response = await apiClient.post('/auth/login', credentials)
-    setUser(saveSession(response.data))
+  async function login() {
+    setUser(guestUser)
   }
 
-  async function register(details) {
-    const response = await apiClient.post('/auth/register', details)
-    setUser(saveSession(response.data))
+  async function register() {
+    setUser(guestUser)
   }
 
   function logout() {
-    localStorage.removeItem(tokenKey)
-    setUser(null)
+    setUser(guestUser)
   }
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, isLoading: false, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   )

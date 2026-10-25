@@ -48,11 +48,11 @@ function HomePage() {
     <main className="page-shell">
       <section className="hero">
         <div className="hero-copy">
-          <p className="eyebrow">Fresh choices, delivered simply</p>
-          <h1>Good food starts with a good shop.</h1>
-          <p>Stock your kitchen with everyday favorites and fresh finds from one thoughtful grocery list.</p>
+          <p className="eyebrow">⚡ Delivery in 15 mins</p>
+          <h1>Fresh groceries delivered to your door.</h1>
+          <p>Order fresh fruits, vegetables, dairy, bakery & essentials with quick 15-minute delivery.</p>
         </div>
-        <div className="hero-art" aria-hidden="true">✦</div>
+        <div className="hero-art" aria-hidden="true">⏱️</div>
       </section>
 
       <section id="categories">
@@ -81,7 +81,7 @@ function HomePage() {
             <aside className="filter-sidebar">
               <div className="filter-heading"><h2>Filters</h2><button className="text-button" onClick={resetFilters} type="button">Reset</button></div>
               <label className="filter-label">Category<select className="category-select" onChange={(event) => { setCategory(event.target.value); setPage(1) }} value={category}><option value="">All categories</option>{categories.map((item) => <option key={item.id} value={item.slug}>{item.name}</option>)}</select></label>
-              <fieldset className="price-fields"><legend>Price range</legend><div><label>Min<input min="0" onChange={(event) => { setMinPrice(event.target.value); setPage(1) }} placeholder="$0" step="0.01" type="number" value={minPrice} /></label><label>Max<input min="0" onChange={(event) => { setMaxPrice(event.target.value); setPage(1) }} placeholder="$50" step="0.01" type="number" value={maxPrice} /></label></div></fieldset>
+              <fieldset className="price-fields"><legend>Price range</legend><div><label>Min<input min="0" onChange={(event) => { setMinPrice(event.target.value); setPage(1) }} placeholder="₹0" step="1" type="number" value={minPrice} /></label><label>Max<input min="0" onChange={(event) => { setMaxPrice(event.target.value); setPage(1) }} placeholder="₹500" step="1" type="number" value={maxPrice} /></label></div></fieldset>
               <label className="filter-label">Sort by<select className="category-select" onChange={(event) => { setSort(event.target.value); setPage(1) }} value={sort}><option value="name_asc">Name A-Z</option><option value="name_desc">Name Z-A</option><option value="price_asc">Price low to high</option><option value="price_desc">Price high to low</option><option value="newest">Newest</option></select></label>
             </aside>
             <div className="catalog-results">

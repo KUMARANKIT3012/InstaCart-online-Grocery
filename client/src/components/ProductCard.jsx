@@ -1,18 +1,16 @@
 import { Link } from 'react-router-dom'
 import { useState } from 'react'
-import { useAuth } from '../context/useAuth.js'
 import { useCart } from '../context/useCart.js'
 import { useWishlist } from '../context/useWishlist.js'
 import { useToast } from '../context/useToast.js'
 
 function ProductCard({ product }) {
-  const { user } = useAuth()
   const { cart, addItem, updateItem, removeItem } = useCart()
   const { isWishlisted, toggle } = useWishlist()
   const { addToast } = useToast()
   const [isUpdating, setIsUpdating] = useState(false)
   const price = Number(product.price).toFixed(2)
-  const cartItem = cart.items.find((item) => item.product_id === product.id)
+  const cartItem = cart.items.find((item) => Number(item.product_id) === Number(product.id))
 
   async function changeQuantity(quantity) {
     setIsUpdating(true)
@@ -37,28 +35,73 @@ function ProductCard({ product }) {
 
   return (
     <article className="product-card">
-      {user && <button aria-label={isWishlisted(product.id) ? 'Remove from favorites' : 'Add to favorites'} className={`favorite-button ${isWishlisted(product.id) ? 'saved' : ''}`} onClick={toggleFavorite} type="button">♥</button>}
+      <button
+        aria-label={isWishlisted(product.id) ? 'Remove from favorites' : 'Add to favorites'}
+        className={`favorite-button ${isWishlisted(product.id) ? 'saved' : ''}`}
+        onClick={toggleFavorite}
+        type="button"
+      >
+        ♥
+      </button>
+
       {product.image_url ? (
-        <Link to={`/products/${product.id}`}><img className="product-image" src={product.image_url} alt={product.name} /></Link>
+        <Link to={`/products/${product.id}`}>
+          <img
+            className="product-image"
+            src={product.image_url}
+            alt={product.name}
+            loading="lazy"
+            onError={(e) => {
+              e.currentTarget.style.display = 'none'
+            }}
+          />
+        </Link>
       ) : (
-        <Link to={`/products/${product.id}`}><div className="product-art" aria-hidden="true">{product.name.charAt(0)}</div></Link>
+        <Link to={`/products/${product.id}`}>
+          <div className="product-art" aria-hidden="true">{product.name.charAt(0)}</div>
+        </Link>
       )}
+
       <div className="product-info">
         <span className="product-category">{product.category_name}</span>
-        <Link to={`/products/${product.id}`}><h3 className="product-name">{product.name}</h3></Link>
+        <Link to={`/products/${product.id}`}>
+          <h3 className="product-name">{product.name}</h3>
+        </Link>
         <div className="product-meta">
-          <span className="product-price">${price}</span>
+          <span className="product-price">₹{price}</span>
           <span className="product-unit">{product.unit}</span>
         </div>
-        {user ? (cartItem ? (
+
+        {cartItem ? (
           <div className="quantity-controls card-quantity">
-            <button aria-label={`Decrease ${product.name}`} disabled={isUpdating} onClick={() => changeQuantity(cartItem.quantity - 1)} type="button">−</button>
+            <button
+              aria-label={`Decrease ${product.name}`}
+              disabled={isUpdating}
+              onClick={() => changeQuantity(cartItem.quantity - 1)}
+              type="button"
+            >
+              −
+            </button>
             <span>{cartItem.quantity}</span>
-            <button aria-label={`Increase ${product.name}`} disabled={isUpdating} onClick={() => changeQuantity(cartItem.quantity + 1)} type="button">+</button>
+            <button
+              aria-label={`Increase ${product.name}`}
+              disabled={isUpdating}
+              onClick={() => changeQuantity(cartItem.quantity + 1)}
+              type="button"
+            >
+              +
+            </button>
           </div>
         ) : (
-          <button className="add-button" disabled={isUpdating} onClick={() => changeQuantity(1)} type="button">{isUpdating ? 'Adding...' : 'Add to cart'}</button>
-        )) : <Link className="add-button" to="/login">Sign in to add</Link>}
+          <button
+            className="add-button"
+            disabled={isUpdating}
+            onClick={() => changeQuantity(1)}
+            type="button"
+          >
+            {isUpdating ? 'Adding...' : 'Add to cart'}
+          </button>
+        )}
       </div>
     </article>
   )
